@@ -52,27 +52,12 @@ namespace Videoteca_Csharp.Vistas
                     {
                         try
                         {
-                            string nombreArchivo = Path.GetFileName(txtRuta.Text);
-                            string destinoArchivo = Path.Combine(carpetaSeleccionada, nombreArchivo);
-                            File.Copy(txtRuta.Text, destinoArchivo, true);
-
-                            ThreadPool.QueueUserWorkItem((state) =>
-                            {
-                                File.Copy(txtRuta.Text, destinoArchivo, true);
-
-                                Invoke((Action)(() => pgbPrensa.Visible = true));
-
-                                for (int i = 0; i <= 100; i++)
-                                {
-                                    Thread.Sleep(50); // Ajusta el tiempo de acuerdo a la velocidad de copia real
-
-                                    Invoke((Action)(() => pgbPrensa.Value = i));
-                                }
-
-                                Invoke((Action)(() => MessageBox.Show($"Se movió de la ruta {txtRuta.Text} a {destinoArchivo}.")));
-
-                                Invoke((Action)(() => pgbPrensa.Visible = false));
-                            });
+                            string archivo = Path.GetFileName(txtRuta.Text);
+                            string nombreArchivo = Path.GetFileName(archivo);
+                            FileInfo fileInfo = new FileInfo(nombreArchivo);
+                            //string destinoArchivo = Path.Combine(carpetaSeleccionada, nombreArchivo); // Esta combina la ruta de la carpeta escogida con el nombre del archivo y su extencion
+                            MessageBox.Show(nombreArchivo.Length.ToString());
+                            //File.Copy(txtRuta.Text, destinoArchivo, true); // Proceso para copiar un video de una ruta a otra
                         }
                         catch (Exception ex)
                         {

@@ -38,14 +38,14 @@
             // 
             // txtUsername
             // 
-            this.txtUsername.Location = new System.Drawing.Point(124, 121);
+            this.txtUsername.Location = new System.Drawing.Point(224, 156);
             this.txtUsername.Name = "txtUsername";
             this.txtUsername.Size = new System.Drawing.Size(165, 20);
             this.txtUsername.TabIndex = 0;
             // 
             // txtClave
             // 
-            this.txtClave.Location = new System.Drawing.Point(124, 160);
+            this.txtClave.Location = new System.Drawing.Point(224, 195);
             this.txtClave.Name = "txtClave";
             this.txtClave.Size = new System.Drawing.Size(165, 20);
             this.txtClave.TabIndex = 1;
@@ -53,7 +53,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(47, 124);
+            this.label1.Location = new System.Drawing.Point(147, 159);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(71, 13);
             this.label1.TabIndex = 2;
@@ -62,7 +62,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(74, 163);
+            this.label2.Location = new System.Drawing.Point(174, 198);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(44, 13);
             this.label2.TabIndex = 3;
@@ -72,7 +72,7 @@
             // 
             this.btnIngresar.BackColor = System.Drawing.Color.RoyalBlue;
             this.btnIngresar.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnIngresar.Location = new System.Drawing.Point(85, 205);
+            this.btnIngresar.Location = new System.Drawing.Point(185, 240);
             this.btnIngresar.Name = "btnIngresar";
             this.btnIngresar.Size = new System.Drawing.Size(193, 23);
             this.btnIngresar.TabIndex = 12;
@@ -84,7 +84,7 @@
             // 
             this.lblTitulo.AutoSize = true;
             this.lblTitulo.Font = new System.Drawing.Font("Impact", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTitulo.Location = new System.Drawing.Point(114, 31);
+            this.lblTitulo.Location = new System.Drawing.Point(214, 66);
             this.lblTitulo.Name = "lblTitulo";
             this.lblTitulo.Size = new System.Drawing.Size(139, 60);
             this.lblTitulo.TabIndex = 13;
@@ -95,7 +95,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(39)))));
-            this.ClientSize = new System.Drawing.Size(345, 262);
+            this.ClientSize = new System.Drawing.Size(533, 359);
             this.Controls.Add(this.lblTitulo);
             this.Controls.Add(this.btnIngresar);
             this.Controls.Add(this.label2);
