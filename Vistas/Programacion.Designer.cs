@@ -31,6 +31,7 @@
             this.dgvPrensa = new System.Windows.Forms.DataGridView();
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnUbicacion = new System.Windows.Forms.Button();
             this.btnUpVideo = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.txtDescripcion = new System.Windows.Forms.TextBox();
@@ -41,7 +42,6 @@
             this.dtpFecha = new System.Windows.Forms.DateTimePicker();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.btnUbicacion = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPrensa)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -51,9 +51,9 @@
             this.dgvPrensa.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvPrensa.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvPrensa.Location = new System.Drawing.Point(12, 218);
+            this.dgvPrensa.Location = new System.Drawing.Point(12, 356);
             this.dgvPrensa.Name = "dgvPrensa";
-            this.dgvPrensa.Size = new System.Drawing.Size(611, 215);
+            this.dgvPrensa.Size = new System.Drawing.Size(920, 215);
             this.dgvPrensa.TabIndex = 12;
             // 
             // label4
@@ -85,10 +85,24 @@
             this.groupBox1.ForeColor = System.Drawing.SystemColors.Control;
             this.groupBox1.Location = new System.Drawing.Point(12, 45);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(611, 167);
+            this.groupBox1.Size = new System.Drawing.Size(920, 167);
             this.groupBox1.TabIndex = 10;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "INSERTAR VIDEO";
+            // 
+            // btnUbicacion
+            // 
+            this.btnUbicacion.BackColor = System.Drawing.Color.Orange;
+            this.btnUbicacion.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnUbicacion.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnUbicacion.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.btnUbicacion.Location = new System.Drawing.Point(10, 85);
+            this.btnUbicacion.Name = "btnUbicacion";
+            this.btnUbicacion.Size = new System.Drawing.Size(584, 23);
+            this.btnUbicacion.TabIndex = 13;
+            this.btnUbicacion.Text = "SELECCIONAR UBICACION";
+            this.btnUbicacion.UseVisualStyleBackColor = false;
+            this.btnUbicacion.Click += new System.EventHandler(this.btnUbicacion_Click);
             // 
             // btnUpVideo
             // 
@@ -124,7 +138,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSelectVideo.BackColor = System.Drawing.Color.MediumSeaGreen;
             this.btnSelectVideo.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnSelectVideo.Location = new System.Drawing.Point(401, 30);
+            this.btnSelectVideo.Location = new System.Drawing.Point(710, 30);
             this.btnSelectVideo.Name = "btnSelectVideo";
             this.btnSelectVideo.Size = new System.Drawing.Size(193, 23);
             this.btnSelectVideo.TabIndex = 8;
@@ -139,14 +153,14 @@
             this.cmbAreas.FormattingEnabled = true;
             this.cmbAreas.Location = new System.Drawing.Point(231, 30);
             this.cmbAreas.Name = "cmbAreas";
-            this.cmbAreas.Size = new System.Drawing.Size(164, 21);
+            this.cmbAreas.Size = new System.Drawing.Size(473, 21);
             this.cmbAreas.TabIndex = 7;
             // 
             // cmbTipos
             // 
             this.cmbTipos.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cmbTipos.FormattingEnabled = true;
-            this.cmbTipos.Location = new System.Drawing.Point(48, 30);
+            this.cmbTipos.Location = new System.Drawing.Point(203, 30);
             this.cmbTipos.Name = "cmbTipos";
             this.cmbTipos.Size = new System.Drawing.Size(132, 21);
             this.cmbTipos.TabIndex = 6;
@@ -171,7 +185,7 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(186, 33);
+            this.label2.Location = new System.Drawing.Point(341, 33);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(39, 13);
             this.label2.TabIndex = 3;
@@ -186,26 +200,12 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "TIPO:";
             // 
-            // btnUbicacion
-            // 
-            this.btnUbicacion.BackColor = System.Drawing.Color.Orange;
-            this.btnUbicacion.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnUbicacion.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnUbicacion.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnUbicacion.Location = new System.Drawing.Point(10, 85);
-            this.btnUbicacion.Name = "btnUbicacion";
-            this.btnUbicacion.Size = new System.Drawing.Size(584, 23);
-            this.btnUbicacion.TabIndex = 13;
-            this.btnUbicacion.Text = "SELECCIONAR UBICACION";
-            this.btnUbicacion.UseVisualStyleBackColor = false;
-            this.btnUbicacion.Click += new System.EventHandler(this.btnUbicacion_Click);
-            // 
             // Programacion
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(39)))));
-            this.ClientSize = new System.Drawing.Size(635, 450);
+            this.ClientSize = new System.Drawing.Size(944, 588);
             this.Controls.Add(this.dgvPrensa);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.groupBox1);

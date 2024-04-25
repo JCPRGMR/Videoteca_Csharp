@@ -13,7 +13,7 @@ namespace Videoteca_Csharp.Modelos
         ConexionSQLite conexionSQLite = new ConexionSQLite();
         public Areas()
         {
-            conexionSQLite.QueryTable("area", "id_area integer primary key autoincrement," +
+            conexionSQLite.QueryTable("areas", "id_area integer primary key autoincrement," +
                 "des_area text," +
                 "f_registro_area text," +
                 "alter_area text");

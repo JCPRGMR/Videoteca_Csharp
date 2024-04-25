@@ -27,16 +27,26 @@ namespace Videoteca_Csharp.Modelos
             };
             return conexionSQLite.QueryExist("tipos", "des_tipo = @tipo", sp);
         }
-        public void Insertar(string value)
+        public string Insertar(string value)
         {
-            SQLiteParameter[] sp = new SQLiteParameter[]
+            try
             {
-                new SQLiteParameter("@tipo", value),
-                new SQLiteParameter("@fecha", DateTime.Now),
-                new SQLiteParameter("@alter", DateTime.Now),
-            };
-            conexionSQLite.QueryInsert("tipos", "des_tipo, f_registro_tipo, alter_tipo",
-                "@tipo, @fecha, @alter", sp);
+                SQLiteParameter[] sp = new SQLiteParameter[]
+                {
+                    new SQLiteParameter("@v1", value),
+                    new SQLiteParameter("@v2", DateTime.Now),
+                    new SQLiteParameter("@v3", DateTime.Now),
+                };
+                conexionSQLite.QueryInsert("tipos", "des_tipo," +
+                    "f_registro_tipo," +
+                    "alter_tipo",
+                    "@v1, @v2, @v3", sp);
+                return "Se inserto correctamente";
+            }
+            catch (SQLiteException ex)
+            {
+                return ex.ToString();
+            }
         }
         public object BuscarId(string value)
         {

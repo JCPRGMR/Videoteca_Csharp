@@ -13,7 +13,7 @@ namespace Videoteca_Csharp.Modelos
         ConexionSQLite conexionSQLite = new ConexionSQLite();
         public Videos()
         {
-            conexionSQLite.QueryTable("videos", "id_video integer primary key auto_increment," +
+            conexionSQLite.QueryTable("videos", "id_video integer primary key autoincrement," +
                 "cod_video text," +
                 "titulo text," +
                 "detalles text," +

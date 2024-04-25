@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net;
 using System.Data.SQLite;
 
 namespace Videoteca_Csharp.Conexion
 {
     internal class ConexionSQLite
     {
-        public string Conectar()
+        public SQLiteConnection Conectar()
         {
-            return @"Data Source=videoteca.db;Version=3;";
+            SQLiteConnection conexion = new SQLiteConnection(@"Data Source=Z:\bin\videotecaServer.db;Version=3;FaillIfMissing=True");
+            return conexion;
         }
         public void QueryTable(string Table, string Columns)
         {
@@ -23,6 +25,7 @@ namespace Videoteca_Csharp.Conexion
                 {
                     cmd.ExecuteNonQuery();
                 }
+                connection.Close();
             }
         }
         public List<object[]> QueryShow(string Table, string Columns)
@@ -82,6 +85,7 @@ namespace Videoteca_Csharp.Conexion
                     if (parametros != null) cmd.Parameters.AddRange(parametros);
                     data = cmd.ExecuteScalar();
                 }
+                connection.Close();
             }
             return data;
         }
@@ -96,6 +100,7 @@ namespace Videoteca_Csharp.Conexion
                     cmd.Parameters.AddRange(parametros);
                     cmd.ExecuteNonQuery();
                 }
+                connection.Close();
             }
         }
         public bool QueryExist(string Table, string Column, SQLiteParameter[] parametros)
@@ -110,20 +115,16 @@ namespace Videoteca_Csharp.Conexion
                     object result = cmd.ExecuteScalar();
                     if (result != null && result != DBNull.Value)
                     {
+                        connection.Close();
                         return (Convert.ToInt32(result) > 0);
                     }
                     else
                     {
+                        connection.Close();
                         return false;
                     }
                 }
             }
-        }
-        public void QueryModify()
-        {
-        }
-        public void QueryUpdate()
-        {
         }
     }
 }
