@@ -24,7 +24,7 @@ namespace Videoteca_Csharp.Modelos
             {
                 new SQLiteParameter("@area", value),
             };
-            return conexionSQLite.QueryExist("areas", "des_area = @area", sp);
+            return conexionSQLite.QueryExist("*", "areas WHERE des_area = @area", sp);
         }
         public void Insertar(string value)
         {
@@ -35,15 +35,17 @@ namespace Videoteca_Csharp.Modelos
                 new SQLiteParameter("@alter", DateTime.Now),
             };
             conexionSQLite.QueryInsert("areas", "des_area, f_registro_area, alter_area",
-                "@tipo, @fecha, @alter", sp);
+                "@area, @fecha, @alter", sp);
         }
-        public object BuscarId(string value)
+        public int BuscarId(string value)
         {
             SQLiteParameter[] sp = new SQLiteParameter[]
             {
                 new SQLiteParameter("@area", value),
             };
-            return conexionSQLite.QuerySearchOneValue("areas", "des_area = @area", sp);
+            object result = conexionSQLite.QuerySearchOneValue("areas WHERE des_area = @area", "id_area", sp);
+
+            return Convert.ToInt32(result);
         }
     }
 }

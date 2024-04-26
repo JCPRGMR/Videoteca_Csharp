@@ -25,7 +25,7 @@ namespace Videoteca_Csharp.Modelos
             {
                 new SQLiteParameter("@tipo", value),
             };
-            return conexionSQLite.QueryExist("tipos", "des_tipo = @tipo", sp);
+            return conexionSQLite.QueryExist("*", "tipos WHERE des_tipo = @tipo", sp);
         }
         public string Insertar(string value)
         {
@@ -54,7 +54,7 @@ namespace Videoteca_Csharp.Modelos
             {
                 new SQLiteParameter("@tipo", value),
             };
-            return conexionSQLite.QuerySearchOneValue("tipos", "des_tipo = @tipo", sp);
+            return conexionSQLite.QuerySearchOneValue("tipos WHERE des_tipo = @tipo", "id_tipo", sp);
         }
     }
 }

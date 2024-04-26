@@ -103,7 +103,7 @@ namespace Videoteca_Csharp.Conexion
                 connection.Close();
             }
         }
-        public bool QueryExist(string Table, string Column, SQLiteParameter[] parametros)
+        public bool QueryExist(string Column, string Table, SQLiteParameter[] parametros)
         {
             using(SQLiteConnection connection = new SQLiteConnection(Conectar()))
             {

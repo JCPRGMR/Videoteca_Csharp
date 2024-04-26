@@ -24,7 +24,7 @@ namespace Videoteca_Csharp.Modelos
             {
                 new SQLiteParameter("@departamento", value),
             };
-            return conexionSQLite.QueryExist("departamentos", "des_departamento = @departamento", sp);
+            return conexionSQLite.QueryExist("*", "departamentos WHERE des_departamento = @departamento", sp);
         }
         public void Insertar(string value)
         {
@@ -43,7 +43,7 @@ namespace Videoteca_Csharp.Modelos
             {
                 new SQLiteParameter("@departamento", value),
             };
-            return conexionSQLite.QuerySearchOneValue("departamentos", "des_departamento = @departamento", sp);
+            return conexionSQLite.QuerySearchOneValue("departamentos WHERE des_departamento = @departamento", "id_departamento", sp);
         }
     }
 }
