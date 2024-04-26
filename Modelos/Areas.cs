@@ -18,6 +18,10 @@ namespace Videoteca_Csharp.Modelos
                 "f_registro_area text," +
                 "alter_area text");
         }
+        public List<object[]> Mostrar()
+        {
+            return conexionSQLite.QueryShow("areas", "*");
+        }
         public bool Existe(string value)
         {
             SQLiteParameter[] sp = new SQLiteParameter[]

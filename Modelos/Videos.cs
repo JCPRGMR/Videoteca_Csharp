@@ -17,8 +17,8 @@ namespace Videoteca_Csharp.Modelos
                 "cod_video text," +
                 "titulo text," +
                 "detalles text," +
-                "ruta_reproduccion," +
-                "nombre_original," +
+                "ruta_reproduccion text," +
+                "nombre_original text," +
                 "miniatura text," +
                 "f_registro_video text," +
                 "alter_video text," +
@@ -28,6 +28,10 @@ namespace Videoteca_Csharp.Modelos
                 "FOREIGN KEY (id_fk_departamento) REFERENCES departamentos(id_departamento)," +
                 "FOREIGN KEY (id_fk_tipo) REFERENCES tipos(id_tipo)," +
                 "FOREIGN KEY (id_fk_area) REFERENCES areas(id_area)");
+        }
+        public List<object[]> Mostrar()
+        {
+            return conexionSQLite.QueryShow("videos", "*");
         }
         public void Insertar(object[] datos)
         {

@@ -19,6 +19,10 @@ namespace Videoteca_Csharp.Modelos
                 "f_registro_tipo text," +
                 "alter_tipo text");
         }
+        public List<object[]> Mostrar()
+        {
+            return conexionSQLite.QueryShow("tipos", "*");
+        }
         public bool Existe(string value)
         {
             SQLiteParameter[] sp = new SQLiteParameter[]
