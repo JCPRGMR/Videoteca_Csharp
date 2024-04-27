@@ -81,15 +81,15 @@ namespace Videoteca_Csharp.Vistas
         private void btnUpVideo_Click(object sender, EventArgs e)
         {
             // SUBIDA DE VIDEOS ASINCRONA ESTE CONDIGO HACERLO FUNCIONAL DESPUES DE QUE LOS DATOS DEL VIDEO SE GUARDEN
-            //Desframentar();
+            Desframentar();
             // COODIGO PARA INSERTAR EN LA BASE DE DATOS
-            if (cmbTipos.Text.Length > 0) if (!tipos.Existe(cmbTipos.Text)) tipos.Insertar(cmbTipos.Text.ToUpper());
-            if (cmbAreas.Text.Length > 0) if (!areas.Existe(cmbAreas.Text)) areas.Insertar(cmbAreas.Text.ToUpper());
+            //if (cmbTipos.Text.Length > 0) if (!tipos.Existe(cmbTipos.Text)) tipos.Insertar(cmbTipos.Text.ToUpper());
+            //if (cmbAreas.Text.Length > 0) if (!areas.Existe(cmbAreas.Text)) areas.Insertar(cmbAreas.Text.ToUpper());
 
             // CODIGO PARA GUARGAR EL VIDEO YYYYMMDD()(PRIMERAS 3 LETRAS DE AREA)001.EXTENSION
             
-            string codigoVideo = dtpFecha.Value.ToString("yyyy") + dtpFecha.Value.ToString("MM") + dtpFecha.Value.ToString("dd") + cmbAreas.Text.Substring(0, 3).ToUpper();
-            MessageBox.Show(codigoVideo);
+            //string codigoVideo = dtpFecha.Value.ToString("yyyy") + dtpFecha.Value.ToString("MM") + dtpFecha.Value.ToString("dd") + cmbAreas.Text.Substring(0, 3).ToUpper();
+            //MessageBox.Show(codigoVideo);
             //MessageBox.Show("Id_tipo: " + tipos.BuscarId(cmbTipos.Text) + "\n Id_area: " + areas.BuscarId(cmbAreas.Text) + "\n Id_departamento: " + departamentos.BuscarId(lblDepartamento.Text));
 
             Llenartipos();
