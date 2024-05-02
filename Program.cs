@@ -17,7 +17,7 @@ namespace Videoteca_Csharp
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Prensa());
+            Application.Run(new Login());
         }
     }
 }

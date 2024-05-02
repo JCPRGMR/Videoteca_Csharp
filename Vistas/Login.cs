@@ -15,11 +15,11 @@ namespace Videoteca_Csharp.Vistas
     public partial class Login : Form
     {
         Usuarios usuarios = new Usuarios();
-        Areas areas = new Areas();
-        Tipos tipos = new Tipos();
-        Departamentos departamentos = new Departamentos();
-        Videos videos = new Videos();
-        Actividades actividades = new Actividades();
+        //Areas areas = new Areas();
+        //Tipos tipos = new Tipos();
+        //Departamentos departamentos = new Departamentos();
+        //Videos videos = new Videos();
+        //Actividades actividades = new Actividades();
 
 
         public Login()

@@ -42,7 +42,7 @@ namespace Videoteca_Csharp.Modelos
             {
                 new SQLiteParameter("@valor", Clave),
             };
-            return conexionSQLite.QueryExist("usuarios", "clave = @valor", param);
+            return conexionSQLite.QueryExist("*", "usuarios where clave = @valor", param);
         }
         public object[] ObtenerDatos(string clave)
         {

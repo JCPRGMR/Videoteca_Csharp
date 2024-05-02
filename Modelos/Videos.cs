@@ -80,5 +80,13 @@ namespace Videoteca_Csharp.Modelos
                 "@fk_tipo," +
                 "@fk_area", sp);
         }
+        public object VerUltimoCodVideo(string cod_video)
+        {
+            SQLiteParameter[] param = new SQLiteParameter[]
+            {
+                new SQLiteParameter("@cod_video", cod_video),
+            };
+            return conexionSQLite.QuerySearchOneValue("videos where cod_video LIKE cod_video%", "cod_video", param);
+        }
     }
 }
