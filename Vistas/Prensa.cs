@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using Videoteca_Csharp.Modelos;
+using System.Diagnostics;
 using System.Threading;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Runtime.InteropServices;
@@ -32,13 +33,47 @@ namespace Videoteca_Csharp.Vistas
             if (lblDepartamento.Text.Length > 0) if (!departamentos.Existe(lblDepartamento.Text)) departamentos.Insertar(lblDepartamento.Text);
             Llenartipos();
             LlenarAreas();
-            dgvPrensa.AutoGenerateColumns = false;
-            dgvPrensa.Columns.Add("CodigoVideo", "CODIGO DE VIDEO");
-            dgvPrensa.Columns.Add("Area", "AREA");
-            dgvPrensa.Columns.Add("Tipo", "TIPO");
-            dgvPrensa.Columns.Add("Titulo", "TITULO");
-            dgvPrensa.Columns.Add("Acciones", "ACCIONES");
-            dgvPrensa.DataSource = videosdbb.Mostrar();
+
+            List<object[]> datos = videosdbb.Mostrar();
+
+            dgvPrensa.Columns.Clear();
+
+            dgvPrensa.Columns.Add("cod_video", "CODIGO DE VIDEO");
+            dgvPrensa.Columns.Add("id_fk_tipo", "ID TIPO");
+            dgvPrensa.Columns.Add("id_fk_area", "ID ÁREA");
+            dgvPrensa.Columns.Add("titulo", "TITULO");
+            DataGridViewLinkColumn columnaRuta = new DataGridViewLinkColumn();
+            columnaRuta.Name = "ruta_reproduccion";
+            columnaRuta.HeaderText = "RUTA DE REPRODUCCIÓN";
+            columnaRuta.DataPropertyName = "ruta_reproduccion"; // Nombre de la columna en el origen de datos
+            dgvPrensa.Columns.Add(columnaRuta);
+
+            // Asignar los datos al DataGridView
+            foreach (var fila in datos)
+            {
+                dgvPrensa.Rows.Add(fila);
+            }
+
+            dgvPrensa.CellContentClick += (sender, e) =>
+            {
+                if (e.ColumnIndex >= 0 && dgvPrensa.Columns[e.ColumnIndex].Name == "ruta_reproduccion")
+                {
+                    string rutaArchivo = dgvPrensa.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+                    FileInfo info = new FileInfo(rutaArchivo);
+                    MessageBox.Show(info.FullName.ToString());
+                    //MessageBox.Show($@"{rutaArchivo}" + "." + info.Extension.ToString());
+                    if (File.Exists($@"{rutaArchivo}"))
+                    {
+                        MessageBox.Show("Archivo leido");
+                        Process.Start("mpc-hc64.exe", $@"{rutaArchivo}");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Porfavor instale El productor K-lite o vlc");
+                    }
+                }
+            };
+
         }
         public void Llenartipos()
         {
@@ -76,37 +111,59 @@ namespace Videoteca_Csharp.Vistas
                     txtRuta.Text = dialog.FileName;
                     FileInfo fileInfo = new FileInfo(txtRuta.Text);
                     pgbPrensa.Maximum = Convert.ToInt32(fileInfo.Length / 1024);
-                    MessageBox.Show($"El tamaño del archivo es: {pgbPrensa.Maximum} KB");
                     pgbPrensa.Value = 0;
-                    MessageBox.Show("Valor actual: " + pgbPrensa.Value);
                 }
             }
         }
         private void btnUpVideo_Click(object sender, EventArgs e)
         {
-            // SUBIDA DE VIDEOS ASINCRONA ESTE CONDIGO HACERLO FUNCIONAL DESPUES DE QUE LOS DATOS DEL VIDEO SE GUARDEN
-            //Desframentar();
 
             // COODIGO PARA INSERTAR EN LA BASE DE DATOS
-            //if (cmbTipos.Text.Length > 0) if (!tipos.Existe(cmbTipos.Text)) tipos.Insertar(cmbTipos.Text.ToUpper());
-            //if (cmbAreas.Text.Length > 0) if (!areas.Existe(cmbAreas.Text)) areas.Insertar(cmbAreas.Text.ToUpper());
+            if (cmbTipos.Text.Length > 0) if (!tipos.Existe(cmbTipos.Text)) tipos.Insertar(cmbTipos.Text.ToUpper());
+            if (cmbAreas.Text.Length > 0) if (!areas.Existe(cmbAreas.Text)) areas.Insertar(cmbAreas.Text.ToUpper());
 
             // CODIGO PARA GUARGAR EL VIDEO YYYYMMDD()(PRIMERAS 3 LETRAS DE AREA)001.EXTENSION
-
             string codigoVideo = dtpFecha.Value.ToString("yyyy") + dtpFecha.Value.ToString("MM") + dtpFecha.Value.ToString("dd") + cmbAreas.Text.Substring(0, 3).ToUpper();
-            MessageBox.Show(codigoVideo);
-            //MessageBox.Show("Id_tipo: " + tipos.BuscarId(cmbTipos.Text) + "\n Id_area: " + areas.BuscarId(cmbAreas.Text) + "\n Id_departamento: " + departamentos.BuscarId(lblDepartamento.Text));
+            int n_codigo;
 
+            switch (videosdbb.VerUltimoCodVideo(codigoVideo))
+            {
+                case null: n_codigo = 1;
+                    break;    
+                default:
+                    n_codigo = int.Parse(videosdbb.VerUltimoCodVideo(codigoVideo).ToString().Substring(11)) + 1;
+                    break;
+            }
+
+            FileInfo file = new FileInfo(txtRuta.Text);
+            MessageBox.Show(codigoVideo + n_codigo.ToString("000") + file.Extension.ToString());
             Llenartipos();
             LlenarAreas();
+            string rutaXD;
+            Desframentar(codigoVideo + n_codigo.ToString("000") + file.Extension.ToString(), out rutaXD);
+            MessageBox.Show(rutaXD);
+            object[] DatosVideo = new object[]
+            {
+                codigoVideo + n_codigo.ToString("000"),
+                txtTitulo.Text,
+                txtDescripcion.Text,
+
+                rutaXD,   // SUBIDA DE VIDEOS ASINCRONA ESTE CONDIGO HACERLO FUNCIONAL DESPUES DE QUE LOS DATOS DEL VIDEO SE GUARDEN
+                file.Name,
+                "Sin miniatura",
+                departamentos.BuscarId(lblDepartamento.Text),
+                tipos.BuscarId(cmbTipos.Text),
+                areas.BuscarId(cmbAreas.Text),
+            };
+            videosdbb.Insertar(DatosVideo);
         }
-        private void Desframentar()
+        private void Desframentar(string cod_video, out string joinedVideoFilePath)
         {
+            joinedVideoFilePath = null; // Inicializar la variable por si no se asigna ningún valor
+
             using (FolderBrowserDialog dialog = new FolderBrowserDialog())
             {
                 dialog.Description = "Selecciona una carpeta compartida";
-                //dialog.SelectedPath = @"Z:";  //Establecer una ruta
-                //dialog.RootFolder = Environment.SpecialFolder.DesktopDirectory;
 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
@@ -114,77 +171,54 @@ namespace Videoteca_Csharp.Vistas
 
                     if (!string.IsNullOrEmpty(txtRuta.Text) && File.Exists(txtRuta.Text))
                     {
-                        var ainc = new Task(() =>
-                        {
-                            try
-                            {
-                                string videoFilePath = txtRuta.Text; // Ruta del archivo de video
-                                int fragmentSize = (1024 * 1024) * 3; // 1 MB (puedes ajustar este valor según tus necesidades)
-                                int fragmentIndex = 0; // Declaramos fragmentIndex aquí
+                        string videoFilePath = txtRuta.Text; // Ruta del archivo de video
+                        int fragmentSize = 1024 * 1024 * 5; // 5 MB (puedes ajustar este valor según tus necesidades)
+                        int fragmentIndex = 0; // Declaramos fragmentIndex aquí
 
-                                FileInfo extension = new FileInfo(txtRuta.Text);
-                                // Dividir el video en fragmentos
-                                using (FileStream input = File.OpenRead(videoFilePath))
+                        FileInfo extension = new FileInfo(txtRuta.Text);
+
+                        try
+                        {
+                            // Reconstruir el video en la carpeta seleccionada mientras se fragmenta
+                            using (FileStream input = File.OpenRead(videoFilePath))
+                            {
+                                byte[] buffer = new byte[fragmentSize];
+                                int bytesRead;
+                                joinedVideoFilePath = Path.Combine(carpetaSeleccionada, $"{cod_video}");
+
+                                using (FileStream outputStream = new FileStream(joinedVideoFilePath, FileMode.Create))
                                 {
-                                    byte[] buffer = new byte[fragmentSize];
-                                    int bytesRead;
                                     while ((bytesRead = input.Read(buffer, 0, buffer.Length)) > 0)
                                     {
-                                        string fragmentFilePath = Path.Combine(carpetaSeleccionada, $"fragment_{fragmentIndex}." + extension.Extension);
+                                        string fragmentFilePath = Path.Combine(carpetaSeleccionada, $"{cod_video}_{fragmentIndex}" + extension.Extension);
                                         using (FileStream output = File.Create(fragmentFilePath))
                                         {
                                             output.Write(buffer, 0, bytesRead);
                                         }
 
-                                        this.Invoke((MethodInvoker)delegate {
-                                            // Actualizar pgbPrensa aquí
-                                            if (pgbPrensa.Value + (1024 * 3) <= pgbPrensa.Maximum)
-                                            {
-                                                pgbPrensa.Value += (1024 * 3);
-                                            }
-                                        });
-
-                                        fragmentIndex++;
-                                    }
-                                }
-                                // Reconstruir el video en la carpeta seleccionada
-                                string joinedVideoFilePath = Path.Combine(carpetaSeleccionada, "video_joined." + extension.Extension);
-                                using (FileStream outputStream = new FileStream(joinedVideoFilePath, FileMode.Create))
-                                {
-                                    for (int i = 0; i < fragmentIndex; i++)
-                                    {
-                                        string fragmentFilePath = Path.Combine(carpetaSeleccionada, $"fragment_{i}." + extension.Extension);
-
                                         // Lee y escribe cada fragmento en el archivo de video reconstruido
-                                        using (FileStream fragmentStream = File.OpenRead(fragmentFilePath))
-                                        {
-                                            byte[] buffer = new byte[fragmentSize];
-                                            int bytesRead;
+                                        outputStream.Write(buffer, 0, bytesRead);
 
-                                            while ((bytesRead = fragmentStream.Read(buffer, 0, buffer.Length)) > 0)
-                                            {
-                                                outputStream.Write(buffer, 0, bytesRead);   // REESCRIBE EL DISCO
-                                                // INVOKE PARA PODER ACCEDER A LOS OBJETOS FORM
-                                                this.Invoke((MethodInvoker)delegate {
-                                                    if (pgbPrensa.Value + (1024 * 3) <= pgbPrensa.Maximum)
-                                                    {
-                                                        pgbPrensa.Value += (1024 * 3);
-                                                    }
-                                                });
-                                            }
-                                        }
                                         // Elimina el fragmento individual después de escribirlo en el archivo reconstruido
                                         File.Delete(fragmentFilePath);
+
+                                        fragmentIndex++;
+
+                                        this.Invoke((MethodInvoker)delegate {
+                                            // Actualizar pgbPrensa aquí
+                                            if (pgbPrensa.Value + bytesRead <= pgbPrensa.Maximum)
+                                            {
+                                                pgbPrensa.Value += bytesRead;
+                                            }
+                                        });
                                     }
                                 }
-                                MessageBox.Show("Reconstruccion completada.");
                             }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show($"Error al desfragmentar el video: {ex.Message}");
-                            }
-                        });
-                        ainc.Start();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Error al desfragmentar el video: {ex.Message}");
+                        }
                     }
                     else
                     {
@@ -193,6 +227,7 @@ namespace Videoteca_Csharp.Vistas
                 }
             }
         }
+
         private void label4_Click(object sender, EventArgs e)
         {
 

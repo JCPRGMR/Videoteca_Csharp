@@ -79,7 +79,7 @@ namespace Videoteca_Csharp.Conexion
             using (SQLiteConnection connection = new SQLiteConnection(Conectar()))
             {
                 connection.Open();
-                string sql = $"SELECT {Columns} FROM {Table} ";
+                string sql = $"SELECT {Columns} FROM {Table}";
                 using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
                 {
                     if (parametros != null) cmd.Parameters.AddRange(parametros);

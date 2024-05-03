@@ -52,19 +52,17 @@ namespace Videoteca_Csharp.Modelos
                 new SQLiteParameter("@fk_area", datos[8]),
             };
             conexionSQLite.QueryInsert("videos",
-                "cod_video" +
+                "cod_video," +
                 "titulo," +
                 "detalles," +
-
                 "ruta_reproduccion," +
                 "nombre_original," +
                 "miniatura," +
-
                 "f_registro_video," +
-                "alter_video" +
+                "alter_video," +
                 "id_fk_departamento," +
                 "id_fk_tipo," +
-                "id_fk_area,",
+                "id_fk_area",
 
                 "@codigo," +
                 "@titulo," +
@@ -84,9 +82,9 @@ namespace Videoteca_Csharp.Modelos
         {
             SQLiteParameter[] param = new SQLiteParameter[]
             {
-                new SQLiteParameter("@cod_video", cod_video),
+                new SQLiteParameter("@cod_video", cod_video + "%"),
             };
-            return conexionSQLite.QuerySearchOneValue("videos where cod_video LIKE cod_video%", "cod_video", param);
+            return conexionSQLite.QuerySearchOneValue("videos where cod_video LIKE @cod_video ORDER BY id_video DESC LIMIT 1", "cod_video", param);
         }
     }
 }
