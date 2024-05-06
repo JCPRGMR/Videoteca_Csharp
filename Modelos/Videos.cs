@@ -28,10 +28,16 @@ namespace Videoteca_Csharp.Modelos
                 "FOREIGN KEY (id_fk_departamento) REFERENCES departamentos(id_departamento)," +
                 "FOREIGN KEY (id_fk_tipo) REFERENCES tipos(id_tipo)," +
                 "FOREIGN KEY (id_fk_area) REFERENCES areas(id_area)");
+
+            conexionSQLite.QueryCustom("DROP VIEW vista_videos; CREATE VIEW vista_videos as " +
+                "SELECT cod_video, des_tipo, des_area, titulo, ruta_reproduccion, id_fk_departamento, f_registro_video FROM videos " +
+                "LEFT JOIN departamentos ON departamentos.id_departamento = videos.id_fk_departamento " +
+                "LEFT JOIN areas ON areas.id_area = videos.id_fk_area " +
+                "LEFT JOIN tipos ON tipos.id_tipo = videos.id_fk_tipo;");
         }
         public List<object[]> Mostrar()
         {
-            return conexionSQLite.QueryShow("videos", "*");
+            return conexionSQLite.QueryShow("vista_videos ORDER BY f_registro_video DESC", "*");
         }
         public void Insertar(object[] datos)
         {
@@ -85,6 +91,14 @@ namespace Videoteca_Csharp.Modelos
                 new SQLiteParameter("@cod_video", cod_video + "%"),
             };
             return conexionSQLite.QuerySearchOneValue("videos where cod_video LIKE @cod_video ORDER BY id_video DESC LIMIT 1", "cod_video", param);
+        }
+        public void ActualizarRuta(object[] datos)
+        {
+            SQLiteParameter[] parama = new SQLiteParameter[]
+            {
+                new SQLiteParameter("@ruta", datos[0]),
+                new SQLiteParameter("@cod_video", datos[1]),
+            };
         }
     }
 }

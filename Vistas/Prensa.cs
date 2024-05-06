@@ -14,6 +14,7 @@ using System.Threading;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Runtime.InteropServices;
 using System.Reflection;
+using System.Drawing.Drawing2D;
 
 namespace Videoteca_Csharp.Vistas
 {
@@ -28,12 +29,49 @@ namespace Videoteca_Csharp.Vistas
         {
             InitializeComponent();
             txtRuta.Enabled = false;
+            txtRuta.Validating += txtRuta_Validating;
+            txtRuta.CausesValidation = true;
+            txtRuta.Focus();
             pgbPrensa.Maximum = 100;
-
             if (lblDepartamento.Text.Length > 0) if (!departamentos.Existe(lblDepartamento.Text)) departamentos.Insertar(lblDepartamento.Text);
             Llenartipos();
             LlenarAreas();
+            llenarDGV();
+        }
+        /**
+         * CAMBIO DE COLOR DEGRADADO
+         */
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
 
+            // Define los colores para el degradado
+            Color[] colors = {
+                Color.Black,
+                Color.FromArgb(128, 0, 128), // Púrpura intermedio
+                Color.FromArgb(148, 0, 211) // Violeta oscuro
+            };
+
+            // Crea un objeto LinearGradientBrush
+            LinearGradientBrush brush = new LinearGradientBrush(
+                this.ClientRectangle,
+                colors[0],
+                colors[colors.Length - 1],
+                LinearGradientMode.Vertical); // Inicia desde arriba y baja
+
+            // Define los pasos de color para el degradado
+            ColorBlend colorBlend = new ColorBlend();
+            colorBlend.Colors = colors;
+            float[] positions = { 0.0f, 0.5f, 1.0f }; // Posiciones de los colores en el degradado
+            colorBlend.Positions = positions;
+
+            brush.InterpolationColors = colorBlend;
+
+            // Dibuja el degradado
+            e.Graphics.FillRectangle(brush, this.ClientRectangle);
+        }
+        public void llenarDGV()
+        {
             List<object[]> datos = videosdbb.Mostrar();
 
             dgvPrensa.Columns.Clear();
@@ -43,6 +81,7 @@ namespace Videoteca_Csharp.Vistas
             dgvPrensa.Columns.Add("id_fk_area", "ID ÁREA");
             dgvPrensa.Columns.Add("titulo", "TITULO");
             DataGridViewLinkColumn columnaRuta = new DataGridViewLinkColumn();
+            columnaRuta.LinkColor = Color.White;
             columnaRuta.Name = "ruta_reproduccion";
             columnaRuta.HeaderText = "RUTA DE REPRODUCCIÓN";
             columnaRuta.DataPropertyName = "ruta_reproduccion"; // Nombre de la columna en el origen de datos
@@ -51,6 +90,7 @@ namespace Videoteca_Csharp.Vistas
             // Asignar los datos al DataGridView
             foreach (var fila in datos)
             {
+                //MessageBox.Show(fila[1].ToString());
                 dgvPrensa.Rows.Add(fila);
             }
 
@@ -60,11 +100,11 @@ namespace Videoteca_Csharp.Vistas
                 {
                     string rutaArchivo = dgvPrensa.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
                     FileInfo info = new FileInfo(rutaArchivo);
-                    MessageBox.Show(info.FullName.ToString());
+                    //MessageBox.Show(info.FullName.ToString());    //MUESTRA LA RUTA DE REPRODUCCION DEL VIDEO
                     //MessageBox.Show($@"{rutaArchivo}" + "." + info.Extension.ToString());
                     if (File.Exists($@"{rutaArchivo}"))
                     {
-                        MessageBox.Show("Archivo leido");
+                        //MessageBox.Show("Archivo leido");   // MENSAJE PARA DE VALIDACION PARA ARCHIVO LEIDO
                         Process.Start("mpc-hc64.exe", $@"{rutaArchivo}");
                     }
                     else
@@ -117,45 +157,51 @@ namespace Videoteca_Csharp.Vistas
         }
         private void btnUpVideo_Click(object sender, EventArgs e)
         {
+            int aux = 0;
+            do 
+            { 
+                if (txtRuta.Text.Length > 0)
+                {
+                    // COODIGO PARA INSERTAR EN LA BASE DE DATOS
+                    if (cmbTipos.Text.Length > 0) if (!tipos.Existe(cmbTipos.Text)) tipos.Insertar(cmbTipos.Text.ToUpper());
+                    if (cmbAreas.Text.Length > 0) if (!areas.Existe(cmbAreas.Text)) areas.Insertar(cmbAreas.Text.ToUpper());
 
-            // COODIGO PARA INSERTAR EN LA BASE DE DATOS
-            if (cmbTipos.Text.Length > 0) if (!tipos.Existe(cmbTipos.Text)) tipos.Insertar(cmbTipos.Text.ToUpper());
-            if (cmbAreas.Text.Length > 0) if (!areas.Existe(cmbAreas.Text)) areas.Insertar(cmbAreas.Text.ToUpper());
+                    // CODIGO PARA GUARGAR EL VIDEO YYYYMMDD()(PRIMERAS 3 LETRAS DE AREA)001.EXTENSION
+                    string codigoVideo = dtpFecha.Value.ToString("yyyy") + dtpFecha.Value.ToString("MM") + dtpFecha.Value.ToString("dd") + cmbAreas.Text.Substring(0, 3).ToUpper();
+                    int n_codigo = int.Parse((videosdbb.VerUltimoCodVideo(codigoVideo)?.ToString()?.Substring(11) ?? "0")) + 1;
 
-            // CODIGO PARA GUARGAR EL VIDEO YYYYMMDD()(PRIMERAS 3 LETRAS DE AREA)001.EXTENSION
-            string codigoVideo = dtpFecha.Value.ToString("yyyy") + dtpFecha.Value.ToString("MM") + dtpFecha.Value.ToString("dd") + cmbAreas.Text.Substring(0, 3).ToUpper();
-            int n_codigo;
+                    FileInfo file = new FileInfo(txtRuta.Text);
+                    MessageBox.Show(codigoVideo + n_codigo.ToString("000") + file.Extension.ToString());
 
-            switch (videosdbb.VerUltimoCodVideo(codigoVideo))
-            {
-                case null: n_codigo = 1;
-                    break;    
-                default:
-                    n_codigo = int.Parse(videosdbb.VerUltimoCodVideo(codigoVideo).ToString().Substring(11)) + 1;
-                    break;
-            }
-
-            FileInfo file = new FileInfo(txtRuta.Text);
-            MessageBox.Show(codigoVideo + n_codigo.ToString("000") + file.Extension.ToString());
+                    object[] DatosVideo = new object[]
+                    {
+                        codigoVideo + n_codigo.ToString("000"),
+                        txtTitulo.Text,
+                        txtDescripcion.Text,
+                        "ruta de video XD",
+                        file.Name,
+                        "Sin miniatura",
+                        departamentos.BuscarId(lblDepartamento.Text),
+                        tipos.BuscarId(cmbTipos.Text),
+                        areas.BuscarId(cmbAreas.Text),
+                    };
+                    videosdbb.Insertar(DatosVideo);
+                    /**
+                     * RUTA DEL VIDEO => Actulizar la base de datos para agregar su ruta
+                     */
+                    //string rutaXD;
+                    //Desframentar(codigoVideo + n_codigo.ToString("000") + file.Extension.ToString(), out rutaXD);
+                    //MessageBox.Show(rutaXD);
+                }
+                else
+                {
+                    aux = 0;
+                    MessageBox.Show("Seleccione un video");
+                }
+            } while (aux != 0);
             Llenartipos();
             LlenarAreas();
-            string rutaXD;
-            Desframentar(codigoVideo + n_codigo.ToString("000") + file.Extension.ToString(), out rutaXD);
-            MessageBox.Show(rutaXD);
-            object[] DatosVideo = new object[]
-            {
-                codigoVideo + n_codigo.ToString("000"),
-                txtTitulo.Text,
-                txtDescripcion.Text,
-
-                rutaXD,   // SUBIDA DE VIDEOS ASINCRONA ESTE CONDIGO HACERLO FUNCIONAL DESPUES DE QUE LOS DATOS DEL VIDEO SE GUARDEN
-                file.Name,
-                "Sin miniatura",
-                departamentos.BuscarId(lblDepartamento.Text),
-                tipos.BuscarId(cmbTipos.Text),
-                areas.BuscarId(cmbAreas.Text),
-            };
-            videosdbb.Insertar(DatosVideo);
+            llenarDGV();
         }
         private void Desframentar(string cod_video, out string joinedVideoFilePath)
         {
@@ -230,7 +276,36 @@ namespace Videoteca_Csharp.Vistas
 
         private void label4_Click(object sender, EventArgs e)
         {
+        }
 
+        private void cmbTipos_Validated(object sender, EventArgs e)
+        {
+        }
+
+        private void cmbTipos_Validating(object sender, CancelEventArgs e)
+        {
+            if (string.IsNullOrEmpty(cmbTipos.Text))
+            {
+                e.Cancel = true;
+                errorProvider1.SetError(cmbTipos, "Este campo es obligatorio");
+            }
+            else
+            {
+                errorProvider1.SetError(cmbTipos, "");
+            }
+        }
+
+        private void txtRuta_Validating(object sender, CancelEventArgs e)
+        {
+            if (txtRuta.Text.Length > 0)
+            {
+                e.Cancel = true;
+                errorProvider1.SetError(txtRuta, "Debe seleccionar un video");
+            }
+            else
+            {
+                errorProvider1.SetError(txtRuta, "");
+            }
         }
     }
 }

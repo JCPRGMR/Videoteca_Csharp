@@ -28,6 +28,18 @@ namespace Videoteca_Csharp.Conexion
                 connection.Close();
             }
         }
+        public void QueryCustom(string sql)
+        {
+            using (SQLiteConnection connection = new SQLiteConnection(Conectar()))
+            {
+                connection.Open();
+                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+        }
         public List<object[]> QueryShow(string Table, string Columns)
         {
             List<object[]> datos = new List<object[]>();
@@ -101,6 +113,13 @@ namespace Videoteca_Csharp.Conexion
                     cmd.ExecuteNonQuery();
                 }
                 connection.Close();
+            }
+        }
+        public void QueryUpdate()
+        {
+            using(SQLiteConnection connection = new SQLiteConnection(Conectar()))
+            {
+                connection.Open();
             }
         }
         public bool QueryExist(string Column, string Table, SQLiteParameter[] parametros)

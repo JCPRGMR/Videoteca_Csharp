@@ -89,6 +89,12 @@
     <Compile Include="Vistas\Configuraciones.Designer.cs">
       <DependentUpon>Configuraciones.cs</DependentUpon>
     </Compile>
+    <Compile Include="Vistas\Galeria.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Vistas\Galeria.Designer.cs">
+      <DependentUpon>Galeria.cs</DependentUpon>
+    </Compile>
     <Compile Include="Vistas\Login.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -121,6 +127,9 @@
     </Compile>
     <EmbeddedResource Include="Vistas\Configuraciones.resx">
       <DependentUpon>Configuraciones.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Vistas\Galeria.resx">
+      <DependentUpon>Galeria.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Vistas\Login.resx">
       <DependentUpon>Login.cs</DependentUpon>

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.txtRuta = new System.Windows.Forms.TextBox();
@@ -47,14 +48,17 @@
             this.lblDepartamento = new System.Windows.Forms.Label();
             this.dgvPrensa = new System.Windows.Forms.DataGridView();
             this.pgbPrensa = new System.Windows.Forms.ProgressBar();
+            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPrensa)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.BackColor = System.Drawing.Color.Transparent;
             this.groupBox1.Controls.Add(this.txtRuta);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.txtTitulo);
@@ -83,6 +87,7 @@
             this.txtRuta.Name = "txtRuta";
             this.txtRuta.Size = new System.Drawing.Size(376, 20);
             this.txtRuta.TabIndex = 15;
+            this.txtRuta.Validating += new System.ComponentModel.CancelEventHandler(this.txtRuta_Validating);
             // 
             // label7
             // 
@@ -166,6 +171,8 @@
             this.cmbTipos.Name = "cmbTipos";
             this.cmbTipos.Size = new System.Drawing.Size(132, 21);
             this.cmbTipos.TabIndex = 6;
+            this.cmbTipos.Validating += new System.ComponentModel.CancelEventHandler(this.cmbTipos_Validating);
+            this.cmbTipos.Validated += new System.EventHandler(this.cmbTipos_Validated);
             // 
             // label3
             // 
@@ -217,17 +224,20 @@
             // 
             this.dgvPrensa.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvPrensa.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvPrensa.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(31)))), ((int)(((byte)(39)))));
             this.dgvPrensa.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.InactiveCaptionText;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvPrensa.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgvPrensa.Location = new System.Drawing.Point(12, 223);
             this.dgvPrensa.Name = "dgvPrensa";
+            this.dgvPrensa.RowHeadersVisible = false;
             this.dgvPrensa.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvPrensa.Size = new System.Drawing.Size(920, 353);
             this.dgvPrensa.TabIndex = 9;
@@ -238,6 +248,10 @@
             this.pgbPrensa.Name = "pgbPrensa";
             this.pgbPrensa.Size = new System.Drawing.Size(193, 23);
             this.pgbPrensa.TabIndex = 10;
+            // 
+            // errorProvider1
+            // 
+            this.errorProvider1.ContainerControl = this;
             // 
             // Prensa
             // 
@@ -256,6 +270,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPrensa)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -281,5 +296,6 @@
         private System.Windows.Forms.TextBox txtRuta;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ProgressBar pgbPrensa;
+        private System.Windows.Forms.ErrorProvider errorProvider1;
     }
 }
