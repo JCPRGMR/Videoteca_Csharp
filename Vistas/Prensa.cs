@@ -159,8 +159,8 @@ namespace Videoteca_Csharp.Vistas
         {
             int aux = 0;
             do 
-            { 
-                if (txtRuta.Text.Length > 0)
+            {
+                if (txtRuta.Text.Length > 0 && cmbAreas.Text.Length > 0 && cmbTipos.Text.Length > 0)
                 {
                     // COODIGO PARA INSERTAR EN LA BASE DE DATOS
                     if (cmbTipos.Text.Length > 0) if (!tipos.Existe(cmbTipos.Text)) tipos.Insertar(cmbTipos.Text.ToUpper());
@@ -171,14 +171,14 @@ namespace Videoteca_Csharp.Vistas
                     int n_codigo = int.Parse((videosdbb.VerUltimoCodVideo(codigoVideo)?.ToString()?.Substring(11) ?? "0")) + 1;
 
                     FileInfo file = new FileInfo(txtRuta.Text);
-                    MessageBox.Show(codigoVideo + n_codigo.ToString("000") + file.Extension.ToString());
+                    //MessageBox.Show(codigoVideo + n_codigo.ToString("000") + file.Extension.ToString());
 
                     object[] DatosVideo = new object[]
                     {
                         codigoVideo + n_codigo.ToString("000"),
                         txtTitulo.Text,
                         txtDescripcion.Text,
-                        "ruta de video XD",
+                        "El video se esta cargando...",
                         file.Name,
                         "Sin miniatura",
                         departamentos.BuscarId(lblDepartamento.Text),
@@ -190,8 +190,8 @@ namespace Videoteca_Csharp.Vistas
                      * RUTA DEL VIDEO => Actulizar la base de datos para agregar su ruta
                      */
                     //string rutaXD;
-                    //Desframentar(codigoVideo + n_codigo.ToString("000") + file.Extension.ToString(), out rutaXD);
-                    //MessageBox.Show(rutaXD);
+                    Desframentar(codigoVideo + n_codigo.ToString("000") + file.Extension.ToString(), codigoVideo + n_codigo.ToString("000"));
+
                 }
                 else
                 {
@@ -203,10 +203,8 @@ namespace Videoteca_Csharp.Vistas
             LlenarAreas();
             llenarDGV();
         }
-        private void Desframentar(string cod_video, out string joinedVideoFilePath)
+        private void Desframentar(string cod_video, string codigo)
         {
-            joinedVideoFilePath = null; // Inicializar la variable por si no se asigna ningún valor
-
             using (FolderBrowserDialog dialog = new FolderBrowserDialog())
             {
                 dialog.Description = "Selecciona una carpeta compartida";
@@ -225,41 +223,54 @@ namespace Videoteca_Csharp.Vistas
 
                         try
                         {
-                            // Reconstruir el video en la carpeta seleccionada mientras se fragmenta
-                            using (FileStream input = File.OpenRead(videoFilePath))
+                            var task = Task.Run(() =>
                             {
-                                byte[] buffer = new byte[fragmentSize];
-                                int bytesRead;
-                                joinedVideoFilePath = Path.Combine(carpetaSeleccionada, $"{cod_video}");
-
-                                using (FileStream outputStream = new FileStream(joinedVideoFilePath, FileMode.Create))
+                                // Reconstruir el video en la carpeta seleccionada mientras se fragmenta
+                                using (FileStream input = File.OpenRead(videoFilePath))
                                 {
-                                    while ((bytesRead = input.Read(buffer, 0, buffer.Length)) > 0)
+                                    byte[] buffer = new byte[fragmentSize];
+                                    int bytesRead;
+                                    string joinedVideoFilePath = Path.Combine(carpetaSeleccionada, $"{cod_video}");
+
+                                    using (FileStream outputStream = new FileStream(joinedVideoFilePath, FileMode.Create))
                                     {
-                                        string fragmentFilePath = Path.Combine(carpetaSeleccionada, $"{cod_video}_{fragmentIndex}" + extension.Extension);
-                                        using (FileStream output = File.Create(fragmentFilePath))
+                                        while ((bytesRead = input.Read(buffer, 0, buffer.Length)) > 0)
                                         {
-                                            output.Write(buffer, 0, bytesRead);
-                                        }
-
-                                        // Lee y escribe cada fragmento en el archivo de video reconstruido
-                                        outputStream.Write(buffer, 0, bytesRead);
-
-                                        // Elimina el fragmento individual después de escribirlo en el archivo reconstruido
-                                        File.Delete(fragmentFilePath);
-
-                                        fragmentIndex++;
-
-                                        this.Invoke((MethodInvoker)delegate {
-                                            // Actualizar pgbPrensa aquí
-                                            if (pgbPrensa.Value + bytesRead <= pgbPrensa.Maximum)
+                                            string fragmentFilePath = Path.Combine(carpetaSeleccionada, $"{cod_video}_{fragmentIndex}" + extension.Extension);
+                                            using (FileStream output = File.Create(fragmentFilePath))
                                             {
-                                                pgbPrensa.Value += bytesRead;
+                                                output.Write(buffer, 0, bytesRead);
                                             }
+
+                                            // Lee y escribe cada fragmento en el archivo de video reconstruido
+                                            outputStream.Write(buffer, 0, bytesRead);
+
+                                            // Elimina el fragmento individual después de escribirlo en el archivo reconstruido
+                                            File.Delete(fragmentFilePath);
+
+                                            fragmentIndex++;
+
+                                            this.Invoke((MethodInvoker)delegate {
+                                                if (pgbPrensa.Value + bytesRead <= pgbPrensa.Maximum)
+                                                {
+                                                    pgbPrensa.Value += bytesRead;
+                                                }
+                                            });
+                                        }
+                                        object[] datos =
+                                        {
+                                            joinedVideoFilePath,
+                                            codigo,
+                                        };
+                                        videosdbb.ActualizarRuta(datos);
+
+                                        this.Invoke((MethodInvoker)delegate
+                                        {
+                                            llenarDGV();
                                         });
                                     }
                                 }
-                            }
+                            });
                         }
                         catch (Exception ex)
                         {

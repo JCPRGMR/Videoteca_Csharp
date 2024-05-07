@@ -12,7 +12,7 @@ namespace Videoteca_Csharp.Conexion
     {
         public SQLiteConnection Conectar()
         {
-            SQLiteConnection conexion = new SQLiteConnection(@"Data Source=Z:\bin\videotecaServer.db;Version=3;FaillIfMissing=True");
+            SQLiteConnection conexion = new SQLiteConnection(@"Data Source=E:\bin\videotecaServer.db;Version=3;");
             return conexion;
         }
         public void QueryTable(string Table, string Columns)
@@ -115,11 +115,18 @@ namespace Videoteca_Csharp.Conexion
                 connection.Close();
             }
         }
-        public void QueryUpdate()
+        public void QueryUpdate(string Table, string Set, string Where, SQLiteParameter[] parametros)
         {
             using(SQLiteConnection connection = new SQLiteConnection(Conectar()))
             {
                 connection.Open();
+                string sql = $"UPDATE {Table} SET {Set} WHERE {Where}";
+                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                {
+                    cmd.Parameters.AddRange(parametros);
+                    cmd.ExecuteNonQuery();
+                }
+                connection.Clone();
             }
         }
         public bool QueryExist(string Column, string Table, SQLiteParameter[] parametros)

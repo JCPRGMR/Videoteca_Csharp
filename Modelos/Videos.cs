@@ -29,7 +29,7 @@ namespace Videoteca_Csharp.Modelos
                 "FOREIGN KEY (id_fk_tipo) REFERENCES tipos(id_tipo)," +
                 "FOREIGN KEY (id_fk_area) REFERENCES areas(id_area)");
 
-            conexionSQLite.QueryCustom("DROP VIEW vista_videos; CREATE VIEW vista_videos as " +
+            conexionSQLite.QueryCustom("DROP VIEW IF EXISTS vista_videos; CREATE VIEW vista_videos as " +
                 "SELECT cod_video, des_tipo, des_area, titulo, ruta_reproduccion, id_fk_departamento, f_registro_video FROM videos " +
                 "LEFT JOIN departamentos ON departamentos.id_departamento = videos.id_fk_departamento " +
                 "LEFT JOIN areas ON areas.id_area = videos.id_fk_area " +
@@ -94,11 +94,12 @@ namespace Videoteca_Csharp.Modelos
         }
         public void ActualizarRuta(object[] datos)
         {
-            SQLiteParameter[] parama = new SQLiteParameter[]
+            SQLiteParameter[] param = new SQLiteParameter[]
             {
                 new SQLiteParameter("@ruta", datos[0]),
                 new SQLiteParameter("@cod_video", datos[1]),
             };
+            conexionSQLite.QueryUpdate("videos", "ruta_reproduccion = @ruta", "cod_video = @cod_video", param);
         }
     }
 }
